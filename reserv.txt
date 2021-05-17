@@ -1,0 +1,560 @@
+<?php
+      $con = mysql_connect("localhost","root","");
+      if(!$con)
+          {
+      die('Could not connect: ' . mysql_error());
+      }
+      mysql_select_db($con,'mini_project');
+      if($_SERVER['REQUEST_METHOD'] === 'POST'){
+       if(isset($_POST['submit'])){
+
+      $query=mysql_query("SELECT * FROM users WHERE username='$_POST[Username]' AND password='$_POST[Password]'");
+      $numrows=mysql_num_rows($query);
+      if($numrows!=0)
+      {
+      while($row=mysql_fetch_assoc($query))
+      {
+      $dbusername=$row['username'];
+      $dbpassword=$row['password'];
+      }
+
+      if($user == $dbusername && $pass == $dbpassword)
+      {
+      session_start();
+      $_SESSION['sess_user']=$user;
+      echo "<script> alert('Logged in successfully');</script>";
+      /* Redirect browser */
+      header("location:dashboard.php");
+      die();
+      }
+      } else {
+      echo "Invalid username or password!";
+      }
+
+      } else {
+      echo "All fields are required!";
+      }
+      }
+      ?>
+
+
+
+
+
+
+
+
+      /*login validate.php which is working only for anirudh*/
+      <?php
+
+      $conn = "";
+
+      try {
+          $servername = "localhost";
+          $dbname = "mini_project";
+          $username = "root";
+          $password = "";
+
+          $conn = new PDO(
+              "mysql:host=$servername; dbname=mini_project",
+              $username, $password
+          );
+
+         $conn->setAttribute(PDO::ATTR_ERRMODE,
+                          PDO::ERRMODE_EXCEPTION);
+      }
+      catch(PDOException $e) {
+          echo "Connection failed: " . $e->getMessage();
+      }
+
+      function test_input($data) {
+
+          $data = trim($data);
+          $data = stripslashes($data);
+          $data = htmlspecialchars($data);
+          return $data;
+      }
+
+      if ($_SERVER["REQUEST_METHOD"]== "POST") {
+
+          $adminname = test_input($_POST["Username"]);
+          $Password = test_input($_POST["Password"]);
+          $stmt = $conn->prepare("SELECT * FROM users");
+          $stmt->execute();
+          $users = $stmt->fetchAll();
+
+          foreach($users as $user) {
+             //echo " Username:" .$user['USERNAME'];
+
+              if(($user['USERNAME'] == $adminname) &&
+                  ($user['PASSWD'] == $Password)) {
+                      header("Location: dashboard.php");
+              }
+              else {
+                  echo "<script language='javascript'>";
+                  echo "alert('WRONG INFORMATION')";
+                  echo "</script>";
+                  die();
+              }
+          }
+      }
+
+
+      ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----booking user------------
+
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
+
+<style>
+* {box-sizing: border-box}
+body {font-family: Arial, Helvetica, sans-serif;
+  margin-left: 80px;
+  margin-right: 80px;
+  background-color:#53900F;
+
+}
+.phone{
+  float:right;
+  font-size: 15px;
+  background-color: #53900F;
+  color:white;
+  padding:5px;
+  border-right: 3px solid white;
+  border-radius: 3px;
+
+
+}
+.email{
+  float:right;
+  font-size: 15px;
+  background-color:  #53900F;
+  color:white;
+  padding:5px;
+  border-right: 3px solid white;
+  border-radius: 3px;
+}
+
+.navbar {
+  width: 100%;
+  background-color:  #579B27;
+  overflow: auto;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0px;
+  border: 1px solid transparent;
+}
+
+.navbar a {
+  float: left;
+  padding: 12px;
+  color:white;
+  font-size: 22px;
+  width: 16.6%; /* Four links of equal widths */
+  text-align: center;
+  font-family: serif;
+  font-weight: bolder;
+}
+
+.navbar a:hover {
+  background-color: #000;
+}
+
+.navbar a.active {
+  background-color: #9DBE26;
+}
+
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 2px solid white;
+
+  }
+}
+.heading{
+  color:/*#579B27*/ #190061;
+  font-size:40px;
+  background-color: white;
+    font-family: Georgia, serif;
+    text-shadow:5px 5px 10px darkgray;
+/*  font-family: "Audiowide",sans-serif;*/
+
+/*  font-style: oblique;*/
+
+  /*text-shadow: 2px 4px solid #AFD375;*/
+  text-transform: uppercase;
+  font-weight:bolder;
+}
+
+.logo{
+  width:230px;
+  height:170px;
+  float: left;
+  padding-top: 10px;
+
+  padding-left: 35px;
+}
+
+
+input[type=submit] {
+      width: 40%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type=text], select {
+        width: 80%;
+        padding: 12px 20px;
+        margin: 2px 0;
+        display: inline-block;
+        border: 1px solid #53900F;
+        border-radius: 4px;
+        box-sizing: border-box;
+
+    }
+		input[type=date], select {
+        width: 80%;
+        padding: 12px 20px;
+        margin: 2px 0;
+        display: inline-block;
+        border: 1px solid #53900F;
+        border-radius: 4px;
+        box-sizing: border-box;
+
+    }
+    .row:after {
+   content: "";
+     display: table;
+     clear: both;
+    }
+    .col-25 {
+			float: left;
+	    width: 40%;
+	  margin-top: 6px;
+	  font-size:20px;
+	  font-variant: small-caps;
+    }
+
+    .col-75 {
+        float: left;
+        width: 60%;
+        margin-top: 6px;
+    }
+		.bookings{
+			background-color: white;
+		  padding-left:  60px;
+		  padding-top: 20px;
+		  font-size: 38px;
+		  font-family: Oxygen;
+		  font-weight:normal;
+		  color: #190061;
+		  margin-bottom: 9px;
+			border-radius: 5px;
+		}
+
+		.inputs{
+			background-color: white;
+		  padding:60px;
+		  width:50%;
+		  border-radius: 15px;
+		  float: left;
+		}
+		.submit{
+		float: right;
+		width: 75%;
+		margin-top: 6px;
+		font-size: 18px;
+		font-variant: small-caps;
+		font-weight: bold;
+	}
+
+</style>
+<body>
+  <div class="heading">
+
+    <span class="email">&nbspEmail id:&nbsp dburrows@gmail.com &nbsp</span>
+    <span class="phone">Phone no.:&nbsp 9876543210 &nbsp  </span>
+    <img class="logo"src="images\logo5.jpg" alt="logo" >
+  <br>&nbsp &nbsp &nbspBUS RESERVATION PORTAL<br><br>
+    </div>
+    <div class="navbar">
+        <a  href="dashboard.php"><span class="glyphicon glyphicon-home"> Home</a>
+        <a class="active" href="bookinguser.php"><span class="glyphicon glyphicon-calendar"></span>  Book tickets</a>
+        <a href="cancellation.php"><span class="glyphicon glyphicon-remove"></span> Cancellation</a>
+          <a href="dshbrd.php"><span class="glyphicon glyphicon-calendar"></span>  Dashboard</a>
+          <a href="account.php"><span class="glyphicon glyphicon-calendar"></span>  My Account</a>
+
+         <a href="index.php"><span class="glyphicon glyphicon-user"></span>  Logout</a>
+
+
+      </div>
+
+
+<div class="bookings">Book your tickets here!!</div>
+		<div class="inputs">
+		<form action=""   method="POST">
+
+			<div class="row">
+				<div class="col-25">
+						<label for="Source">Starting point:</label><br>
+					</div>
+				<div class="col-75">
+						<input type="text" id="Source" name="Source"><br>
+					</div>
+			</div>
+
+			 <div class="row">
+				<div class="col-25">
+						<label for="Destination">Destination:</label><br>
+					</div>
+				<div class="col-75">
+						<input type="text" id="Destination" name="Destination"><br>
+					</div>
+			</div>
+
+			<div class="row">
+			<div class="col-25">
+					<label for="date">Date of departure:</label><br>
+				</div>
+			<div class="col-75">
+					<!--<input type="date" id="date" name="date"><br>-->
+          <input type="text" name="date" id="date" placeholder="YYYY-MM-DD" title="Enter a date in this format YYYY-MM-DD"/>
+				</div>
+		</div>
+
+		<div class="row">
+		<div class="col-25">
+				<label for="class">Class:</label><br>
+		</div>
+		<div class="col-75">
+				<label for="class">AC</label> &nbsp
+				<input type="radio" id="ac"  name="AC" value="ac">&nbsp &nbsp
+				<label for="class">Non AC</label>&nbsp
+			<input type="radio" id="nonac" name="Non-AC" value="Non-AC"><br>
+			</div>
+	</div>
+
+				<div class="row">
+				<div class="col-25">
+						<label for="seats">No. of seats:</label><br>
+					</div>
+				<div class="col-75">
+						<input type="text" id="seats" name="seats"><br>
+					</div>
+				</div>
+
+				 <a
+				 <div class="submit">
+				 	    <input type="submit" value="Submit" name="Submit"><br>
+				 </div>
+</form>
+	</div>
+  <?php
+  $con = mysqli_connect("localhost","root","","mini_project");
+
+  if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    exit();
+  }
+  if($_SERVER['REQUEST_METHOD'] === 'POST'){
+  if(isset($_POST['Submit'])){
+      //$date=$_POST['date'];
+      //$newDate=date_format($date,"Y/m/d");
+      // $newDate = date("Y-m-d", strtotime($date));
+      // Perform queries and print out affected rows
+      $result=mysqli_query($con, "SELECT * FROM route WHERE origin='$_POST[Source]' and destination='$_POST[Destination]'");
+      //echo "Affected rows: " . mysqli_affected_rows($con);
+      $row=mysqli_fetch_assoc($result);
+      $route_id=$row['RID'];
+      //echo "Route id: ".$row['RID'];
+      //echo "Route id: ".$route_id;
+      $result1=mysqli_query($con,"SELECT BID FROM bus WHERE RID=$route_id and (TOTAL_SEATS-RESERVED_SEATS)>='$_POST[seats]' AND DEPART_DATE='$_POST[date]'");
+      $row1=mysqli_fetch_assoc($result1);
+      $bus_id=$row1['BID'];
+      //echo "Bus details" . $row1['BID'];
+  if(!$row1){
+     echo "No buses found for the given details";
+  }
+  else{
+     $result3=mysqli_query($con,"UPDATE bus SET RESERVED_SEATS=RESERVED_SEATS+'$_POST[seats]'  WHERE BID=$bus_id");
+  }
+  //header('Location:dashboard.php');
+}
+}
+  /*mysqli_query($con, "DELETE FROM users WHERE gender='female'");
+  echo "Affected rows: " . mysqli_affected_rows($con);*/
+  mysqli_close($con);
+  ?>
+</body>
+</html>
+
+
+
+
+
+
+
+
+echo "<div class='bookings'>Enter the passenger details!</div>";
+  echo "<div class='inputs'>";
+  echo "<form action=''   method='POST'>";
+
+    echo "<div class='row'>";
+      echo "<div class='col-25'>";
+          echo "<label for='Source'>Name:</label><br>
+        </div>";
+      echo "<div class='col-75'>";
+            echo "<input type='text' id='Name' name='Name' required><br><br>";
+        echo "</div>";
+    echo "</div>";
+
+    echo "<div class='row'>";
+      echo "<div class='col-25'>";
+          echo "<label for='Source'>Age:</label><br></div>";
+      echo "<div class='col-75'>";
+            echo "<input type='text' id='Age' name='Age' required><br><br>";
+        echo "</div>";
+    echo "</div>";
+
+
+    echo "<div class='row'>";
+      echo "<div class='col-25'>";
+          echo "<label for='Source'>Gender</label><br><div>";
+      echo "<div class='col-75'>";
+        echo "<input list='drop_list' type='text'  name='Gender'>";
+        echo "<datalist id='drop_list'>";
+          echo "<option value='Male'></option>";
+          echo "<option value='Female'></option></datalist>";
+            //echo "<br>";
+        echo "</div>";
+    echo "</div>";
+    echo "<br><br>";
+    echo "<div class='submit'>";
+           echo"<input type='submit' value='Submit' name='Submit'><br>  </div>";
+
+
+
+
+
+
+
+
+
+
+           <?php
+
+           $con = mysqli_connect("localhost","root","","mini_project");
+
+           if (mysqli_connect_errno()) {
+             echo "Failed to connect to MySQL: " . mysqli_connect_error();
+             exit();
+           }
+           if($_SERVER['REQUEST_METHOD'] === 'POST'){
+           if(isset($_POST['Submit'])){
+               //$date=$_POST['date'];
+               //$newDate=date_format($date,"Y/m/d");
+               // $newDate = date("Y-m-d", strtotime($date));
+               // Perform queries and print out affected rows
+               $result=mysqli_query($con, "SELECT * FROM route WHERE origin='$_POST[Source]' and destination='$_POST[Destination]'");
+               //echo "Affected rows: " . mysqli_affected_rows($con);
+               $row=mysqli_fetch_assoc($result);
+               $route_id=$row['RID'];
+             //  $_SESSION['seats']=$_POST['seats'];
+               //echo "Route id: ".$row['RID'];
+               //echo "Route id: ".$route_id;
+             //  $result1=mysqli_query($con,"SELECT BID FROM bus WHERE RID=$route_id and (TOTAL_SEATS-RESERVED_SEATS)>='$_POST[seats]' AND DEPART_DATE='$_POST[date]'");
+             $query="SELECT b.BID,r.ORIGIN,r.DESTINATION,b.DEPART_DATE,b.DEPART_TIME,b.TOTAL_SEATS,b.RESERVED_SEATS FROM bus as b, route as r WHERE r.RID=$route_id and (b.TOTAL_SEATS-b.RESERVED_SEATS)>='1' AND b.DEPART_DATE='$_POST[date]'";
+               $get_result=mysqli_query($con,$query);
+             //  $row1=mysqli_fetch_array($get_result);
+             //  $numrows=mysqli_num_rows($get_result);
+               //$bus_id=$row1['BID'];
+               //echo "Bus details" . $row1['BID'];
+           if(!$get_result){
+
+              echo "<div style='width:300px;background-color:#fff;border-radius:5px;margin-left:460px;padding-left:15px;font-size:30px;text-align:center;'><br><br>";
+              echo "No buses avilable for the given details.<br><a href='login.php'>Go back</a><br><br></div>";
+           }
+
+             // $result3=mysqli_query($con,"UPDATE bus SET RESERVED_SEATS=RESERVED_SEATS+'$_POST[seats]'  WHERE BID=$bus_id");
+
+             //  echo "<br><br>";
+               /*echo "<table style='border:2px solid red;background-color:#fff;'>";
+               echo "<tr><th style='border-bottom:3px solid #000; border-left:2px solid #000'>BUS ID</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>ORIGIN</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>DESTINATION</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>DEPART DATE</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>DEPART TIME</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>TOTAL SEATS</th><th style='border-bottom:3px solid #000; border-left:2px solid #000'>RESERVED SEATS</th><th>             </th></tr>";
+
+             $userid='1006';
+                 $row1=mysqli_fetch_array($get_result,MYSQLI_ASSOC);
+                 $bid=$row1['BID'];
+                 $seats=$row1['RESERVED_SEATS'];
+                 $seats++;
+                 //echo "<form action=''   method='GET'>";
+               /*  echo "<tr><td>";
+                 echo $row1['BID'];
+                 echo "</td><td>";
+                 echo $row1['ORIGIN'];
+                 echo "</td><td>";
+                 echo $row1['DESTINATION'];
+                 echo "</td><td>";
+                 echo $row1['DEPART_DATE'];
+                 echo "</td><td>";
+                 echo $row1['DEPART_TIME'];
+                 echo "</td><td>";
+                 echo $row1['TOTAL_SEATS'];
+                 echo "</td><td>";
+                 echo $row1['RESERVED_SEATS'];
+                 $seats=$row1['RESERVED_SEATS']+1;
+                 echo "</td></tr>";
+                 echo "</TABLE>";*/
+             //  echo "</div>";
+             else{
+                 $userid= 1006;
+                 $seats= 1;
+
+                   $row1=mysqli_fetch_array($get_result,MYSQLI_ASSOC);
+                   $bus_id=$row1['BID'];
+                   $query5="INSERT INTO reservation (BUSID,PID,SEAT_NO) VALUES ('$bus_id','$userid','$seats')";
+                   if(mysqli_query($con,$query5))
+                   {
+                     echo "<script>alert('Thank you for Submitting the details. Booking successful');</script>";
+                     mysqli_close($con);
+                      //exit();
+                   }
+                 }
+             }
+           }
+           ?>
